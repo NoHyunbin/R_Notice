@@ -48,10 +48,10 @@ public class FileDownloadController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (MalformedURLException e) {
-            log.error(e.getMessage());
+            log.error("", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
