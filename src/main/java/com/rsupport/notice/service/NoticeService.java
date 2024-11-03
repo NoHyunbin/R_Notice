@@ -90,7 +90,7 @@ public class NoticeService {
             noticeRepository.save(notice);
 
             // 첨부파일 조회
-            List<NoticeFileMapping> noticeFiles = noticeFileRepository.findByNotice_NoticeId(noticeId);
+            List<NoticeFileMapping> noticeFiles = noticeFileRepository.findByNotice_NoticeIdAndDeleteFlag(noticeId, "N");
             optionalNotice.get().setNoticeFiles(noticeFiles);
             return ResponseEntity.ok(ResultResponse.res(HttpStatus.OK, "조회가 완료 되었어요.", optionalNotice));
         }
@@ -126,7 +126,7 @@ public class NoticeService {
         notice.setDeleteFlag(originNotice.getDeleteFlag());
 
         // 첨부파일 수정
-        List<NoticeFile> noticeFiles = noticeFileRepository.findByNotice_NoticeIdAndDeleteFlag(notice.getNoticeId(), "N");
+        List<NoticeFile> noticeFiles = noticeFileRepository.findByNotice_NoticeId(notice.getNoticeId());
         noticeFiles.forEach(noticeFile -> {
             noticeFile.setDeleteFlag("Y");
             noticeFile.setDeletedBy(notice.getAuthor());

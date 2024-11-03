@@ -14,6 +14,7 @@ import com.rsupport.notice.domain.Notice;
 import com.rsupport.notice.domain.NoticeFile;
 import com.rsupport.notice.repository.NoticeFileRepository;
 import com.rsupport.notice.repository.NoticeRepository;
+import com.rsupport.notice.repository.noticemapping.NoticeFileMapping;
 import com.rsupport.notice.repository.noticemapping.NoticeMapping;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,7 +109,7 @@ public class NoticeServiceTest {
         // 결과
         verify(noticeRepository, times(1)).findById(1L);
         verify(noticeRepository, times(1)).save(notice);
-        verify(noticeFileRepository, times(1)).findByNotice_NoticeId(1L);
+        verify(noticeFileRepository, times(1)).findByNotice_NoticeIdAndDeleteFlag(1L, "N");
         assert response.getStatusCode() == HttpStatus.OK;
         assert response.getBody().getResultMessage().equals("조회가 완료 되었어요.");
     }
@@ -127,7 +128,7 @@ public class NoticeServiceTest {
         // 결과
         verify(noticeRepository, times(1)).findById(1L);
         verify(noticeRepository, times(0)).save(notice);
-        verify(noticeFileRepository, times(0)).findByNotice_NoticeId(1L);
+        verify(noticeFileRepository, times(0)).findByNotice_NoticeIdAndDeleteFlag(1L, "N");
         assert response.getStatusCode() == HttpStatus.OK;
         assert response.getBody().getResultMessage().equals("조회가 결과가 없어요.");
     }
@@ -228,7 +229,7 @@ public class NoticeServiceTest {
         List<MultipartFile> files = Collections.singletonList(multipartFile);
         List<NoticeFile> noticeFiles = Collections.singletonList(mock(NoticeFile.class));
         when(noticeRepository.findById(1L)).thenReturn(Optional.of(notice));
-        when(noticeFileRepository.findByNotice_NoticeIdAndDeleteFlag(1L, "N")).thenReturn(noticeFiles);
+        when(noticeFileRepository.findByNotice_NoticeId(1L)).thenReturn(noticeFiles);
         when(noticeFileRepository.saveAll(noticeFiles)).thenReturn(noticeFiles);
 
         // 메소드 실행
@@ -236,7 +237,7 @@ public class NoticeServiceTest {
 
         // 결과
         verify(noticeRepository, times(1)).findById(1L);
-        verify(noticeFileRepository, times(1)).findByNotice_NoticeIdAndDeleteFlag(1L, "N");
+        verify(noticeFileRepository, times(1)).findByNotice_NoticeId(1L);
         verify(noticeFileRepository, times(1)).saveAll(noticeFiles);
         assert response.getStatusCode() == HttpStatus.OK;
         assert response.getBody().getResultMessage().equals("공지 수정에 성공했어요.");
